@@ -14,6 +14,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private Vector2 offset;
     [SerializeField] private AnimationCurve heightCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
     [SerializeField] private bool generateTerrain = true;
+    [SerializeField] private TowerManager towerManager;
 
     private float[,] heightMap;
     
@@ -38,6 +39,8 @@ public class MapGenerator : MonoBehaviour
     {
         GenerateHeightMap();
         GenerateMesh();
+        
+        towerManager.SpawnTower();
     }
 
     private void GenerateHeightMap()
@@ -62,7 +65,27 @@ public class MapGenerator : MonoBehaviour
                float sampleX = (x + offsetX) / noiseScale;
                float sampleY = (y + offsetY) / noiseScale;
                float noise = Mathf.PerlinNoise(sampleX, sampleY);
-               heightMap[x, y] = heightCurve.Evaluate(noise) * terrainHeight;
+               //heightMap[x, y] = heightCurve.Evaluate(noise) * terrainHeight;
+               float terrainY =
+                   heightCurve.Evaluate(noise) * terrainHeight;
+
+                // Centre of the map
+               float centerX = width / 2f;
+               float centerZ = height / 2f;
+
+                // Distance from centre
+               float distanceFromCenter = Vector2.Distance(
+                   new Vector2(x, y),
+                   new Vector2(centerX, centerZ)
+               );
+
+                // Flatten area around tower
+               if (distanceFromCenter <= towerRadius)
+               {
+                   terrainY = towerHeight;
+               }
+
+               heightMap[x, y] = terrainY;
             }
         }
     }
@@ -172,6 +195,20 @@ public class MapGenerator : MonoBehaviour
     public float CellSize => cellSize;
     public float[,] HeightMap => heightMap;
 
+    //Tower Spawning
+    [SerializeField] private float towerRadius = 8f;
+    [SerializeField] private float towerHeight = 3f;
+    
+    // public Vector3 GetMapCenter()
+    // {
+    //     float x = (width * cellSize) / 2f;
+    //     float z = (height * cellSize) / 2f;
+    //
+    //     float y = GetTerrainHeight(x, z);
+    //
+    //     return new Vector3(x, y, z);
+    // }
+    
 }
     
     // public int mapWidth;
