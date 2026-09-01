@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -15,6 +16,15 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private AnimationCurve heightCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
     [SerializeField] private bool generateTerrain = true;
     [SerializeField] private TowerManager towerManager;
+    
+    //paths
+    [SerializeField] private float pathWidth = 4f;
+    [SerializeField] private float pathMeanderFrequency = 0.05f;
+    [SerializeField] private float pathSteerStrength = 0.15f;
+    [SerializeField] private int minPathCount = 3;
+    [SerializeField] private int maxPathCount = 6;
+    
+    [SerializeField] private bool useRandomSeed = true;
 
     private float[,] heightMap;
     
@@ -25,6 +35,11 @@ public class MapGenerator : MonoBehaviour
     {
         meshFilter = GetComponent<MeshFilter>();
         meshCollider = GetComponent<MeshCollider>();
+
+        if (useRandomSeed)
+        {
+            seed = System.Environment.TickCount;
+        }
     }
 
     public void Start()
@@ -37,6 +52,7 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
+        GeneratePaths();
         GenerateHeightMap();
         GenerateMesh();
         
@@ -80,12 +96,145 @@ public class MapGenerator : MonoBehaviour
                );
 
                 // Flatten area around tower
-               if (distanceFromCenter <= towerRadius)
-               {
-                   terrainY = towerHeight;
-               }
+                float towerStrength = CalculateFalloff(distanceFromCenter, towerRadius);
+
+                float pathStrength = 0f;
+                foreach (var path in paths)
+                {
+                    foreach (var point in path)
+                    {
+                        float distanceToPoint = Vector2.Distance(new Vector2(x, y), new Vector2(point.x, point.y));
+                        float strength = CalculateFalloff(distanceToPoint, pathWidth);
+
+                        if (strength > pathStrength)
+                        {
+                            pathStrength = strength;
+                        }
+                    }
+                }
+
+                float flattenStrength = Mathf.Max(towerStrength, pathStrength);
+                terrainY = Mathf.Lerp(terrainY, towerHeight, flattenStrength);
 
                heightMap[x, y] = terrainY;
+            }
+        }
+    }
+    
+    //get places for paths to start
+    private Vector2Int GetRandomEdgePoint(int pathIndex, System.Random rng)
+    {
+        // evenly space each path's starting direction around the full circle
+        float baseAngle = (360f / pathCount) * pathIndex;
+
+        // jitter within this path's own slice so it's not perfectly mechanical
+        float maxJitter = (180f / pathCount) * 0.5f;
+        float jitter = (float)(rng.NextDouble() * 2 - 1) * maxJitter;
+
+        float angleRadians = (baseAngle + jitter) * Mathf.Deg2Rad;
+        Vector2 dir = new Vector2(Mathf.Cos(angleRadians), Mathf.Sin(angleRadians));
+
+        float halfWidth = width / 2f;
+        float halfHeight = height / 2f;
+        Vector2 center = new Vector2(halfWidth, halfHeight);
+
+        // find whether this direction hits a side edge or a top/bottom edge first
+        float tX = dir.x != 0 ? halfWidth / Mathf.Abs(dir.x) : float.MaxValue;
+        float tY = dir.y != 0 ? halfHeight / Mathf.Abs(dir.y) : float.MaxValue;
+        float t = Mathf.Min(tX, tY);
+
+        Vector2 edgePoint = center + dir * t;
+
+        int x = Mathf.Clamp(Mathf.RoundToInt(edgePoint.x), 0, width - 1);
+        int y = Mathf.Clamp(Mathf.RoundToInt(edgePoint.y), 0, height - 1);
+
+        return new Vector2Int(x, y);
+    }
+    
+    private void GeneratePaths()
+    {
+        paths.Clear();
+        System.Random rng = new System.Random(seed);
+
+        pathCount = rng.Next(minPathCount, maxPathCount + 1);
+
+        for (int i = 0; i < pathCount; i++)
+        {
+            paths.Add(GeneratePath(i, rng));
+        }
+    }
+    
+    private float CalculateFalloff(float distance, float radius)
+    {
+        if (distance >= radius) return 0f;
+
+        float t = distance / radius; // 0 at the centre point, 1 at the radius's edge
+        return 1f - Mathf.SmoothStep(0f, 1f, t);
+    }
+    
+    private List<Vector2Int> GeneratePath(int pathIndex, System.Random rng)
+    {
+        List<Vector2Int> waypoints = new List<Vector2Int>();
+
+        Vector2 current = GetRandomEdgePoint(pathIndex, rng);
+        Vector2 center = new Vector2(width / 2f, height / 2f);
+
+        waypoints.Add(new Vector2Int(Mathf.RoundToInt(current.x), Mathf.RoundToInt(current.y)));
+
+        float noiseOffset = (float)rng.NextDouble() * 1000f;
+
+        // the direction the path is currently heading, carried forward between steps
+        Vector2 heading = (center - current).normalized;
+
+        int maxSteps = 1000;
+        int steps = 0;
+
+        while (Vector2.Distance(current, center) > towerRadius && steps < maxSteps)
+        {
+            Vector2 directionToCenter = (center - current).normalized;
+
+            // nudge the heading toward the centre a little each step, rather than
+            // snapping fully onto it — this is what lets a bend actually persist
+            heading = Vector2.Lerp(heading, directionToCenter, pathSteerStrength).normalized;
+
+            float noiseValue = Mathf.PerlinNoise(noiseOffset + steps * pathMeanderFrequency, 0f);
+            float angle = (noiseValue - 0.5f) * 2f * pathWobbleStrength;
+
+            Vector2 stepDirection = RotateVector(heading, angle);
+            current += stepDirection * pathStepSize;
+            heading = stepDirection;
+
+            waypoints.Add(new Vector2Int(Mathf.RoundToInt(current.x), Mathf.RoundToInt(current.y)));
+            steps++;
+        }
+
+        return waypoints;
+    }
+
+    private Vector2 RotateVector(Vector2 v, float radians)
+    {
+        float cos = Mathf.Cos(radians);
+        float sin = Mathf.Sin(radians);
+
+        return new Vector2(
+            v.x * cos - v.y * sin,
+            v.x * sin + v.y * cos
+        );
+    }
+    
+    private void OnDrawGizmos()
+    {
+        if (paths == null) return;
+
+        Gizmos.color = Color.red;
+
+        foreach (var path in paths)
+        {
+            foreach (var point in path)
+            {
+                Vector3 localPos = new Vector3(point.x * cellSize, terrainHeight, point.y * cellSize);
+                Vector3 worldPos = transform.TransformPoint(localPos);
+                Gizmos.DrawSphere(worldPos, 0.3f);
             }
         }
     }
@@ -198,6 +347,13 @@ public class MapGenerator : MonoBehaviour
     //Tower Spawning
     [SerializeField] private float towerRadius = 8f;
     [SerializeField] private float towerHeight = 3f;
+    
+    //paths settings
+    [SerializeField] private int pathCount = 3;
+    [SerializeField] private float pathStepSize = 1f;
+    [SerializeField] private float pathWobbleStrength = 0.5f;
+    
+    private List<List<Vector2Int>> paths = new List<List<Vector2Int>>();
     
     // public Vector3 GetMapCenter()
     // {
