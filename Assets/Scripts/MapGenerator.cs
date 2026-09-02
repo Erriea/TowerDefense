@@ -15,6 +15,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private AnimationCurve heightCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
     [SerializeField] private bool generateTerrain = true;
     [SerializeField] private TowerManager towerManager;
+    [SerializeField] private int heightSteps = 8;
 
     private float[,] heightMap;
     
@@ -66,8 +67,12 @@ public class MapGenerator : MonoBehaviour
                float sampleY = (y + offsetY) / noiseScale;
                float noise = Mathf.PerlinNoise(sampleX, sampleY);
                //heightMap[x, y] = heightCurve.Evaluate(noise) * terrainHeight;
-               float terrainY =
-                   heightCurve.Evaluate(noise) * terrainHeight;
+               float terrainY = heightCurve.Evaluate(noise) * terrainHeight;
+               
+               // Make the terrain height stepped/pixelated
+               float stepSize = terrainHeight / heightSteps;
+
+               terrainY = Mathf.Round(terrainY / stepSize) * stepSize;
 
                 // Centre of the map
                float centerX = width / 2f;

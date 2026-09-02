@@ -132,7 +132,6 @@ GameObject:
   - component: {fileID: 74005011}
   - component: {fileID: 74005010}
   - component: {fileID: 74005009}
-  - component: {fileID: 74005014}
   m_Layer: 0
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -156,7 +155,7 @@ MonoBehaviour:
   height: 200
   cellSize: 1
   terrainHeight: 15
-  noiseScale: 30
+  noiseScale: 60
   seed: 1
   offset: {x: 1, y: 5}
   heightCurve:
@@ -185,6 +184,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   generateTerrain: 1
   towerManager: {fileID: 0}
+  heightSteps: 7
   towerRadius: 8
   towerHeight: 3
 --- !u!64 &74005010
@@ -277,20 +277,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &74005014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 74005008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b9bde24c466d5e4a99febd90267b222, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mapGenerator: {fileID: 74005009}
-  towerPrefab: {fileID: 2856793208276681400, guid: f380f0e5e99228147aa461b48fbcb3ad, type: 3}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
