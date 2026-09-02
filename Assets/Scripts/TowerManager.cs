@@ -4,6 +4,7 @@ public class TowerManager : MonoBehaviour
 {
     [SerializeField] private MapGenerator mapGenerator;
     [SerializeField] private GameObject towerPrefab;
+    [SerializeField] private MonsterSpawner monsterSpawner;
 
     public void SpawnTower()
     {
@@ -17,11 +18,14 @@ public class TowerManager : MonoBehaviour
         Vector3 towerPosition = new Vector3(x, y, z);
 
         // Spawn tower
-        Instantiate(
-            towerPrefab,
-            towerPosition,
-            Quaternion.identity
-        );
+        GameObject tower = Instantiate(towerPrefab, towerPosition, Quaternion.identity);
+
+        //monsterSpawner.SetTower(tower.transform);
+    }
+
+    public void SetTower(Transform newTower)
+    {
+       //tower = newTower;
     }
     
     // Vector3 towerPosition =
