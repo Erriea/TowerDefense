@@ -15,6 +15,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private AnimationCurve heightCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
     [SerializeField] private bool generateTerrain = true;
     [SerializeField] private TowerManager towerManager;
+    // height steps
     [SerializeField] private int heightSteps = 8;
 
     private float[,] heightMap;
