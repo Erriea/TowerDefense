@@ -17,6 +17,8 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private bool generateTerrain = true;
     [SerializeField] private TowerManager towerManager;
     
+    [SerializeField] private int heightSteps = 8;
+    
     //paths
     [SerializeField] private float pathWidth = 4f;
     [SerializeField] private float pathMeanderFrequency = 0.05f;
@@ -82,8 +84,12 @@ public class MapGenerator : MonoBehaviour
                float sampleY = (y + offsetY) / noiseScale;
                float noise = Mathf.PerlinNoise(sampleX, sampleY);
                //heightMap[x, y] = heightCurve.Evaluate(noise) * terrainHeight;
-               float terrainY =
-                   heightCurve.Evaluate(noise) * terrainHeight;
+               float terrainY = heightCurve.Evaluate(noise) * terrainHeight;
+
+               // Make the terrain height stepped/pixelated
+               float stepSize = terrainHeight / heightSteps;
+
+               terrainY = Mathf.Round(terrainY / stepSize) * stepSize;
 
                 // Centre of the map
                float centerX = width / 2f;
