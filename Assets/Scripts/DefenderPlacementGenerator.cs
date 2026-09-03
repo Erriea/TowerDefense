@@ -10,6 +10,8 @@ public class DefenderPlacementGenerator : MonoBehaviour
     [SerializeField] private float towerExclusionRadius = 15f;
     [SerializeField] private float minDistanceFromPath = 5f;
     [SerializeField] private float minSpotSpacing = 5f;
+    
+    [SerializeField] private GameObject golemPrefab;
 
     [SerializeField] private GameObject placementMarkerPrefab;
     
@@ -241,12 +243,16 @@ public class DefenderPlacementGenerator : MonoBehaviour
     private void ConfirmPlacement()
     {
         currentPreviewSpot.IsOccupied = true;
+        
+        if (previewMarker != null)
+        {
+            Destroy(previewMarker);
+            previewMarker = null;
+        }
 
-        // stop treating this marker as "the preview" — it's now marking a placed defender,
-        // so we don't want EndPlacementMode's cleanup to destroy it
-        previewMarker = null;
+        Instantiate(golemPrefab, currentPreviewSpot.Position, currentPreviewSpot.Rotation);
+
         currentPreviewSpot = null;
-
         isInPlacementMode = false;
     }
 }
