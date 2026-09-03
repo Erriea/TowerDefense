@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class DefenderSpawner : MonoBehaviour
 {
-    [Header("References")]
     [SerializeField] private Mana manaSystem;
     [SerializeField] private GameObject defenderPrefab;
     [SerializeField] private Camera playerCamera;
-
-    [Header("Defender Settings")]
+    
     [SerializeField] private float defenderCost = 2f;
 
     private bool isPlacingDefender = false;
