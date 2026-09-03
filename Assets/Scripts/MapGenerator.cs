@@ -27,11 +27,17 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private int maxPathCount = 6;
     
     [SerializeField] private bool useRandomSeed = true;
+    
+    public IReadOnlyList<IReadOnlyList<Vector2Int>> Paths => paths;
+    [SerializeField] private float defenderPadRadius = 5f;
+    [SerializeField] private DefenderPlacementGenerator defenderPlacementGenerator;
 
     private float[,] heightMap;
     
     private MeshFilter meshFilter;
     private MeshCollider meshCollider;
+    
+    
 
     private void Awake()
     {
@@ -55,10 +61,14 @@ public class MapGenerator : MonoBehaviour
     public void GenerateMap()
     {
         GeneratePaths();
+        defenderPlacementGenerator.GenerateCandidateGridPoints();
         GenerateHeightMap();
         GenerateMesh();
         
+        defenderPlacementGenerator.ResolveWorldPositions();
+        
         towerManager.SpawnTower();
+        //defenderPlacementGenerator.ShowPlacementMarkers();
     }
 
     private void GenerateHeightMap()
@@ -119,7 +129,19 @@ public class MapGenerator : MonoBehaviour
                     }
                 }
 
-                float flattenStrength = Mathf.Max(towerStrength, pathStrength);
+                float defenderStrength = 0f;
+                foreach (var spot in defenderPlacementGenerator.CandidateGridPoints)
+                {
+                    float distanceToSpot = Vector2.Distance(new Vector2(x, y), spot);
+                    float strength = CalculateFalloff(distanceToSpot, defenderPadRadius);
+
+                    if (strength > defenderStrength)
+                    {
+                        defenderStrength = strength;
+                    }
+                }
+
+                float flattenStrength = Mathf.Max(towerStrength, Mathf.Max(pathStrength, defenderStrength));
                 terrainY = Mathf.Lerp(terrainY, towerHeight, flattenStrength);
 
                heightMap[x, y] = terrainY;
