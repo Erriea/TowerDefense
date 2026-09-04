@@ -6,6 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(MeshCollider))]
 public class MapGenerator : MonoBehaviour
 {
+    [Header("Map Settings")]
     [SerializeField] private int width;
     [SerializeField] private int height;
     [SerializeField] private float cellSize;
@@ -19,7 +20,7 @@ public class MapGenerator : MonoBehaviour
     
     [SerializeField] private int heightSteps = 8;
     
-    //paths
+    [Header("Paths")]
     [SerializeField] private float pathWidth = 4f;
     [SerializeField] private float pathMeanderFrequency = 0.05f;
     [SerializeField] private float pathSteerStrength = 0.15f;
@@ -28,16 +29,34 @@ public class MapGenerator : MonoBehaviour
     
     [SerializeField] private bool useRandomSeed = true;
     
+    [Header("Terrain Colours")]
+    [SerializeField] private string lowColorHex = "#1E88E5"; 
+    [SerializeField] private string middleColorHex = "#8D6E63"; 
+    [SerializeField] private string highColorHex = "#43A047";
+    
+    [Header("Random Object Spawning")]
+    // arrays containing the prefabs so they can be randomised
+    [SerializeField] private GameObject[] treePrefabs;
+    [SerializeField] private GameObject[] rockPrefabs;
+    
+    [SerializeField] private int treeCount = 25;
+    [SerializeField] private int rockCount = 20;
+    
+    [SerializeField] private float environmentPadding = 2f;
+    [SerializeField] private float minTreeHeight = 2f;
+    [SerializeField] private float maxTreeHeight = 5f;
+    [SerializeField] private Transform environmentParent;
+    
     public IReadOnlyList<IReadOnlyList<Vector2Int>> Paths => paths;
     [SerializeField] private float defenderPadRadius = 5f;
+    [SerializeField] private DefenderPlacementGenerator defenderPlacementGenerator;
 
     private float[,] heightMap;
     
     private MeshFilter meshFilter;
     private MeshCollider meshCollider;
     
-    [SerializeField] private MonsterSpawner monsterSpawner;
-    [SerializeField] private DefenderPlacementGenerator defenderPlacementGenerator;
+    
 
     private void Awake()
     {
@@ -68,7 +87,7 @@ public class MapGenerator : MonoBehaviour
         defenderPlacementGenerator.ResolveWorldPositions();
         
         towerManager.SpawnTower();
-        monsterSpawner.BeginSpawning();
+        SpawnEnvironment();
         //defenderPlacementGenerator.ShowPlacementMarkers();
     }
 
@@ -76,7 +95,7 @@ public class MapGenerator : MonoBehaviour
     {
         heightMap = new float[width, height];
         
-        //uses the seed to make a random offset thats different each time
+        //uses the seed to make a random offset that is different each time
         System.Random random = new System.Random(seed);
 
         float offsetX = random.Next(-10000, 10000) + offset.x;
@@ -147,6 +166,136 @@ public class MapGenerator : MonoBehaviour
 
                heightMap[x, y] = terrainY;
             }
+        }
+    }
+    
+    private void SpawnEnvironment()
+    {
+        ClearEnvironment();
+
+        System.Random rng = new System.Random(seed);
+
+        SpawnObjects(treePrefabs, treeCount, rng);
+        SpawnObjects(rockPrefabs, rockCount, rng);
+    }
+    
+    private void SpawnObjects(GameObject[] prefabs, int count, System.Random rng)
+    {
+        if (prefabs == null || prefabs.Length == 0)
+        {
+            return;
+        }
+
+        int spawned = 0;
+        int attempts = 0;
+
+        int maxAttempts = count * 20;
+
+        while (spawned < count && attempts < maxAttempts)
+        {
+            attempts++;
+
+            // Pick a random position on the map
+            int x = rng.Next(0, width);
+            int z = rng.Next(0, height);
+
+            Vector2Int gridPosition = new Vector2Int(x, z);
+
+            // Don't spawn on paths
+            if (IsNearPath(gridPosition))
+            {
+                continue;
+            }
+
+            // Don't spawn near the tower
+            Vector2 center = new Vector2(width / 2f, height / 2f);
+
+            float distanceFromTower = Vector2.Distance(
+                new Vector2(x, z),
+                center
+            );
+
+            if (distanceFromTower < towerRadius + environmentPadding)
+            {
+                continue;
+            }
+
+            // Get terrain height
+            float terrainY = heightMap[x, z];
+
+            // Don't spawn outside allowed height range
+            if (terrainY < minTreeHeight || terrainY > maxTreeHeight)
+            {
+                continue;
+            }
+
+            // Choose a random prefab
+            GameObject prefab =
+                prefabs[rng.Next(0, prefabs.Length)];
+
+            // Convert grid position into world position
+            Vector3 spawnPosition = transform.TransformPoint(
+                new Vector3(
+                    x * cellSize,
+                    terrainY,
+                    z * cellSize
+                )
+            );
+
+            // Random rotation
+            Quaternion rotation = Quaternion.Euler(
+                0f,
+                (float)rng.NextDouble() * 360f,
+                0f
+            );
+
+            GameObject spawnedObject = Instantiate(
+                prefab,
+                spawnPosition,
+                rotation
+            );
+
+            // Parent the object
+            if (environmentParent != null)
+            {
+                spawnedObject.transform.SetParent(environmentParent);
+            }
+
+            spawned++;
+        }
+    }
+    
+    private bool IsNearPath(Vector2Int position)
+    {
+        foreach (var path in paths)
+        {
+            foreach (var point in path)
+            {
+                float distance = Vector2.Distance(
+                    position,
+                    point
+                );
+
+                if (distance < pathWidth + environmentPadding)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+    
+    private void ClearEnvironment()
+    {
+        if (environmentParent == null)
+        {
+            return;
+        }
+
+        for (int i = environmentParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(environmentParent.GetChild(i).gameObject);
         }
     }
     
@@ -267,6 +416,14 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+    
+    private Color HexToColor(string hex) 
+    { 
+        Color color; 
+        if (ColorUtility.TryParseHtmlString(hex, out color)) 
+            return color; 
+        Debug.LogError("Invalid hex colour: " + hex); return Color.white; 
+    }
 
     private void GenerateMesh()
     {
@@ -359,12 +516,22 @@ public class MapGenerator : MonoBehaviour
     {
         float normalizedHeight = height / terrainHeight; 
         
-        if (normalizedHeight < 0.3f) 
-        { return Color.blue; } 
-        else if (normalizedHeight < 0.6f) 
-        { return new Color(0.45f, 0.25f, 0.1f); } 
-        else 
-        { return Color.green; }
+        Color lowColor = HexToColor(lowColorHex); 
+        Color middleColor = HexToColor(middleColorHex); ; 
+        Color highColor = HexToColor(highColorHex);
+
+        if (normalizedHeight < 0.2f)
+        {
+            return lowColor;
+        }
+        else if (normalizedHeight < 0.4f)
+        {
+            return middleColor;
+        }
+        else
+        {
+            return highColor;
+        }
     }
 
     public float GetTerrainHeight(float worldX, float worldZ)
@@ -402,31 +569,5 @@ public class MapGenerator : MonoBehaviour
     
    
 }
-
-// public Vector3 GetMapCenter()
-// {
-//     float x = (width * cellSize) / 2f;
-//     float z = (height * cellSize) / 2f;
-//
-//     float y = GetTerrainHeight(x, z);
-//
-//     return new Vector3(x, y, z);
-// }
-
-    
-    // public int mapWidth;
-    // public int mapHeight;
-    // public float noiseScale;
-    //
-    // public bool autoUpdate;
-    //
-    // public void GenerateMap()
-    // {
-    //     float[,] noiseMap = Noise.GenerateNoiseMap(mapWidth, mapHeight, noiseScale);
-    //     
-    //     MapDisplay mapDisplay = FindObjectOfType<MapDisplay>();
-    //     mapDisplay.DrawNoiseMap(noiseMap);
-    // }
-    //
 
 
