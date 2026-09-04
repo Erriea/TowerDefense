@@ -277,6 +277,9 @@ public class MapGenerator : MonoBehaviour
 
         Vector2[] uv =
             new Vector2[vertices.Length];
+        
+        Color[] colors =
+            new Color[vertices.Length];
 
         int[] triangles =
             new int[width * height * 6];
@@ -305,6 +308,8 @@ public class MapGenerator : MonoBehaviour
                         (float)x / width,
                         (float)z / height
                     );
+                
+                colors[vertexIndex] = GetTerrainColor(y);
             }
         }
         
@@ -323,8 +328,7 @@ public class MapGenerator : MonoBehaviour
 
                 triangles[triangleIndex++] = vertex + 1;
                 triangles[triangleIndex++] = vertex + vertexCountX;
-                triangles[triangleIndex++] =
-                    vertex + vertexCountX + 1;
+                triangles[triangleIndex++] = vertex + vertexCountX + 1;
             }
         }
         
@@ -333,12 +337,12 @@ public class MapGenerator : MonoBehaviour
 
         mesh.name = "Procedural Terrain";
 
-        mesh.indexFormat =
-            UnityEngine.Rendering.IndexFormat.UInt32;
+        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
 
         mesh.vertices = vertices;
         mesh.triangles = triangles;
         mesh.uv = uv;
+        mesh.colors = colors;
 
         mesh.RecalculateNormals();
         mesh.RecalculateBounds();
@@ -348,6 +352,18 @@ public class MapGenerator : MonoBehaviour
         // Update collision mesh
         meshCollider.sharedMesh = null;
         meshCollider.sharedMesh = mesh;
+    }
+    
+    private Color GetTerrainColor(float height)
+    {
+        float normalizedHeight = height / terrainHeight; 
+        
+        if (normalizedHeight < 0.3f) 
+        { return Color.blue; } 
+        else if (normalizedHeight < 0.6f) 
+        { return new Color(0.45f, 0.25f, 0.1f); } 
+        else 
+        { return Color.green; }
     }
 
     public float GetTerrainHeight(float worldX, float worldZ)
@@ -383,17 +399,19 @@ public class MapGenerator : MonoBehaviour
     
     private List<List<Vector2Int>> paths = new List<List<Vector2Int>>();
     
-    // public Vector3 GetMapCenter()
-    // {
-    //     float x = (width * cellSize) / 2f;
-    //     float z = (height * cellSize) / 2f;
-    //
-    //     float y = GetTerrainHeight(x, z);
-    //
-    //     return new Vector3(x, y, z);
-    // }
-    
+   
 }
+
+// public Vector3 GetMapCenter()
+// {
+//     float x = (width * cellSize) / 2f;
+//     float z = (height * cellSize) / 2f;
+//
+//     float y = GetTerrainHeight(x, z);
+//
+//     return new Vector3(x, y, z);
+// }
+
     
     // public int mapWidth;
     // public int mapHeight;
