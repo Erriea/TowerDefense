@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2220462107612290119}
   - component: {fileID: 8027864796430310914}
   - component: {fileID: 2597206895462506632}
+  - component: {fileID: 1943810860425190296}
   m_Layer: 0
   m_Name: WizardTowerPoint
   m_TagString: Untagged
@@ -56,6 +57,19 @@ BoxCollider:
   m_Size: {x: 11.892913, y: 30.05476, z: 11.925383}
   m_Center: {x: 1.1746898, y: 14.52738, z: 0.21348953}
 --- !u!114 &2597206895462506632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5229765372996249487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7506ec7cf8442049b4ffd46a777ca39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+--- !u!114 &1943810860425190296
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
