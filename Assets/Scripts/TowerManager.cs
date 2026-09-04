@@ -8,25 +8,22 @@ public class TowerManager : MonoBehaviour
 
     public void SpawnTower()
     {
-        // Get the centre of the map
         float x = (mapGenerator.Width * mapGenerator.CellSize) / 2f;
         float z = (mapGenerator.Height * mapGenerator.CellSize) / 2f;
-
-        // Get the terrain height at that position
         float y = mapGenerator.GetTerrainHeight(x, z);
 
-        Vector3 towerPosition = new Vector3(x, y, z);
+        Vector3 localPosition = new Vector3(x, y, z);
+        Vector3 worldPosition = mapGenerator.transform.TransformPoint(localPosition);
 
-        // Spawn tower
-        GameObject tower = Instantiate(towerPrefab, towerPosition, Quaternion.identity);
-
-        //monsterSpawner.SetTower(tower.transform);
+        GameObject tower = Instantiate(towerPrefab, worldPosition, Quaternion.identity);
     }
 
+    /*
     public void SetTower(Transform newTower)
     {
        //tower = newTower;
     }
+    */
     
     // Vector3 towerPosition =
     //     mapGenerator.GetMapCenter();

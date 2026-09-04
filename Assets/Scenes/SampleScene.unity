@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 74005010}
   - component: {fileID: 74005009}
   - component: {fileID: 74005014}
+  - component: {fileID: 74005015}
   m_Layer: 0
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -192,6 +193,8 @@ MonoBehaviour:
   minPathCount: 3
   maxPathCount: 6
   useRandomSeed: 1
+  defenderPadRadius: 5
+  defenderPlacementGenerator: {fileID: 74005015}
   towerRadius: 12
   towerHeight: 3
   pathCount: 3
@@ -302,6 +305,26 @@ MonoBehaviour:
   mapGenerator: {fileID: 74005009}
   towerPrefab: {fileID: 5229765372996249487, guid: 601e33d5a2d6b7542a60e2fb0f34bda0, type: 3}
   monsterSpawner: {fileID: 0}
+--- !u!114 &74005015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 74005008}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0d512b4701ac6447bf52ee111dd38d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mapGenerator: {fileID: 74005009}
+  waypointSampleInterval: 15
+  offsetDistance: 6
+  towerExclusionRadius: 15
+  minDistanceFromPath: 5
+  minSpotSpacing: 5
+  placementMarkerPrefab: {fileID: 3943258364438408021, guid: 636bbeb921815f6409652c5a6c4a13fe, type: 3}
+  markerHeightOffset: 0.1
 --- !u!1 &293275500
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,13 +486,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.5793778, y: 0.008067255, z: -0.0057350164, w: 0.8149991}
-  m_LocalPosition: {x: 138.64796, y: 217.74011, z: 11.687195}
+  m_LocalRotation: {x: 0.022302344, y: -0.8585886, z: 0.5108063, w: 0.037486885}
+  m_LocalPosition: {x: 153, y: 118, z: 189}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 78, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 61.5, y: -175, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1651,9 +1674,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manaSystem: {fileID: 355913398}
-  defenderPrefab: {fileID: 1541766605630093562, guid: 79ed3e29e6d5f434ca59b75332a9ef50, type: 3}
-  playerCamera: {fileID: 330585545}
-  defenderCost: 2
+  defenderPrefab: {fileID: 6870110520421432804, guid: 915120442488be74a9f50367655e894d, type: 3}
+  placementGenerator: {fileID: 74005015}
+  defenderCost: 5
 --- !u!4 &1927821679
 Transform:
   m_ObjectHideFlags: 0

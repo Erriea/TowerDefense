@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class DefenderPlacementGenerator : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class DefenderPlacementGenerator : MonoBehaviour
     [SerializeField] private float minDistanceFromPath = 5f;
     [SerializeField] private float minSpotSpacing = 5f;
     
-    [SerializeField] private GameObject golemPrefab;
+    public event Action<Vector3, Quaternion> OnSpotConfirmed;
 
     [SerializeField] private GameObject placementMarkerPrefab;
     
@@ -243,14 +244,14 @@ public class DefenderPlacementGenerator : MonoBehaviour
     private void ConfirmPlacement()
     {
         currentPreviewSpot.IsOccupied = true;
-        
+
         if (previewMarker != null)
         {
             Destroy(previewMarker);
             previewMarker = null;
         }
 
-        Instantiate(golemPrefab, currentPreviewSpot.Position, currentPreviewSpot.Rotation);
+        OnSpotConfirmed?.Invoke(currentPreviewSpot.Position, currentPreviewSpot.Rotation);
 
         currentPreviewSpot = null;
         isInPlacementMode = false;

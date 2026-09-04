@@ -1,74 +1,79 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class DefenderSpawner : MonoBehaviour
 {
     [SerializeField] private Mana manaSystem;
     [SerializeField] private GameObject defenderPrefab;
-    [SerializeField] private Camera playerCamera;
-    
+    [SerializeField] private DefenderPlacementGenerator placementGenerator;
+
     [SerializeField] private float defenderCost = 2f;
-
-    private bool isPlacingDefender = false;
-
-    private void Update()
-    {
-        if (!isPlacingDefender)
-            return;
-
-        HandlePlacement();
-    }
     
+    public float DefenderCost => defenderCost;
+
+    private void OnEnable()
+    {
+        placementGenerator.OnSpotConfirmed += HandleSpotConfirmed;
+    }
+
+    private void OnDisable()
+    {
+        placementGenerator.OnSpotConfirmed -= HandleSpotConfirmed;
+    }
+
     public void SelectDefender()
     {
-        //ensures we have enough mana
         if (manaSystem.CurrentMana < defenderCost)
         {
             Debug.Log("Not enough mana to place defender!");
             return;
         }
 
-        // Enter placement mode
-        isPlacingDefender = true;
-
-        Debug.Log("Defender selected. Click on the map to place it.");
+        placementGenerator.BeginPlacementMode();
     }
 
-    private void HandlePlacement()
+    private void HandleSpotConfirmed(Vector3 position, Quaternion rotation)
     {
-        //checks if the player has pressed their left mouse click
-        if (!Input.GetMouseButtonDown(0))
-            return;
-
-        //creates a ray from the camera through the mouse position 
-        Ray ray = playerCamera.ScreenPointToRay(Input.mousePosition);
-
-        //casts the ray onto the generated map and wiats for a 'hit'
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            PlaceDefender(hit.point);
-        }
-    }
-
-    private void PlaceDefender(Vector3 position)
-    {
-        //checks if the player has enough mana to spawn the Golem
         if (!manaSystem.TryUseMana(defenderCost))
         {
             Debug.Log("Not enough mana!");
-            isPlacingDefender = false;
             return;
         }
 
-        //Spawns the defender
-        Instantiate(
-            defenderPrefab,
-            position,
-            Quaternion.identity
-        );
+        Instantiate(defenderPrefab, position, rotation);
+    }
+    
+    public class DefenderButtonUI : MonoBehaviour
+    {
+        [SerializeField] private Mana manaSystem;
+        [SerializeField] private DefenderSpawner defenderSpawner;
+        [SerializeField] private Button defenderButton;
+        [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private TMP_Text costText;
 
-        //once the player has placed the golem, we will exit the placing mode
-        isPlacingDefender = false;
+        [SerializeField] private float unaffordableAlpha = 0.4f;
 
-        Debug.Log("Defender placed!");
+        private void OnEnable()
+        {
+            manaSystem.OnManaChanged += UpdateButtonState;
+
+            costText.text = "Cost = " + defenderSpawner.DefenderCost;
+
+            UpdateButtonState(manaSystem.CurrentMana, manaSystem.MaxMana);
+        }
+
+        private void OnDisable()
+        {
+            manaSystem.OnManaChanged -= UpdateButtonState;
+        }
+
+        private void UpdateButtonState(float currentMana, float maxMana)
+        {
+            bool canAfford = currentMana >= defenderSpawner.DefenderCost;
+
+            defenderButton.interactable = canAfford;
+            canvasGroup.alpha = canAfford ? 1f : unaffordableAlpha;
+        }
     }
 }
