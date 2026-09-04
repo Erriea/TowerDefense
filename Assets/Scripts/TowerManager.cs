@@ -21,6 +21,8 @@ public class TowerManager : MonoBehaviour
 
         GameObject towerObject = Instantiate(towerPrefab, worldPosition, Quaternion.identity);
         tower = towerObject.GetComponent<Tower>();
+
+        monsterSpawner.BeginSpawning();
     }
 
     /*

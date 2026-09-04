@@ -194,8 +194,21 @@ MonoBehaviour:
   minPathCount: 3
   maxPathCount: 6
   useRandomSeed: 1
+  lowColorHex: '#45301D'
+  middleColorHex: '#0D4013'
+  highColorHex: '#061F0B'
+  treePrefabs:
+  - {fileID: 34075782911922079, guid: 02d36971c82cdea4099e30203335eb5b, type: 3}
+  rockPrefabs:
+  - {fileID: 3265073863929933657, guid: ad691eb9a012b124a9a5c6f324112775, type: 3}
+  - {fileID: 5868041560739413326, guid: 817cbf2f2e0b8294aa7d6296cae60f2f, type: 3}
+  treeCount: 25
+  rockCount: 20
+  environmentPadding: 2
+  minTreeHeight: 2
+  maxTreeHeight: 5
+  environmentParent: {fileID: 0}
   defenderPadRadius: 10
-  monsterSpawner: {fileID: 74005016}
   defenderPlacementGenerator: {fileID: 74005015}
   towerRadius: 15
   towerHeight: 6
@@ -306,7 +319,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapGenerator: {fileID: 74005009}
   towerPrefab: {fileID: 5229765372996249487, guid: 601e33d5a2d6b7542a60e2fb0f34bda0, type: 3}
-  monsterSpawner: {fileID: 0}
+  monsterSpawner: {fileID: 74005016}
 --- !u!114 &74005015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -779,7 +792,7 @@ Light:
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 5000
+  m_ColorTemperature: 2932
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
