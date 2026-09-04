@@ -30,14 +30,14 @@ public class MapGenerator : MonoBehaviour
     
     public IReadOnlyList<IReadOnlyList<Vector2Int>> Paths => paths;
     [SerializeField] private float defenderPadRadius = 5f;
-    [SerializeField] private DefenderPlacementGenerator defenderPlacementGenerator;
 
     private float[,] heightMap;
     
     private MeshFilter meshFilter;
     private MeshCollider meshCollider;
     
-    
+    [SerializeField] private MonsterSpawner monsterSpawner;
+    [SerializeField] private DefenderPlacementGenerator defenderPlacementGenerator;
 
     private void Awake()
     {
@@ -68,6 +68,7 @@ public class MapGenerator : MonoBehaviour
         defenderPlacementGenerator.ResolveWorldPositions();
         
         towerManager.SpawnTower();
+        monsterSpawner.BeginSpawning();
         //defenderPlacementGenerator.ShowPlacementMarkers();
     }
 
@@ -75,7 +76,7 @@ public class MapGenerator : MonoBehaviour
     {
         heightMap = new float[width, height];
         
-        //uses the seed to make a random offset that is different each time
+        //uses the seed to make a random offset thats different each time
         System.Random random = new System.Random(seed);
 
         float offsetX = random.Next(-10000, 10000) + offset.x;

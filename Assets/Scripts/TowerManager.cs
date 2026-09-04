@@ -6,6 +6,10 @@ public class TowerManager : MonoBehaviour
     [SerializeField] private GameObject towerPrefab;
     [SerializeField] private MonsterSpawner monsterSpawner;
 
+    private Tower tower;
+
+    public IDamageable TowerTarget => tower;
+
     public void SpawnTower()
     {
         float x = (mapGenerator.Width * mapGenerator.CellSize) / 2f;
@@ -15,7 +19,8 @@ public class TowerManager : MonoBehaviour
         Vector3 localPosition = new Vector3(x, y, z);
         Vector3 worldPosition = mapGenerator.transform.TransformPoint(localPosition);
 
-        GameObject tower = Instantiate(towerPrefab, worldPosition, Quaternion.identity);
+        GameObject towerObject = Instantiate(towerPrefab, worldPosition, Quaternion.identity);
+        tower = towerObject.GetComponent<Tower>();
     }
 
     /*

@@ -16,9 +16,33 @@ public abstract class Defender : MonoBehaviour
         currentHealth = maxHealth;
     }
 
+    
     protected virtual void Update()
     {
         attackTimer += Time.deltaTime;
+
+        if (attackTimer >= attackInterval)
+        {
+            TryAttack();
+        }
+    }
+
+    protected virtual void TryAttack()
+    {
+        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+
+        foreach (var hit in hits)
+        {
+            Enemy enemy = hit.GetComponent<Enemy>();
+
+            if (enemy != null)
+            {
+                enemy.TakeDamage(attackDamage);
+                Debug.Log($"{name} attacked {enemy.name} for {attackDamage} damage");
+                attackTimer = 0f;
+                return;
+            }
+        }
     }
 
     public virtual void TakeDamage(float amount)

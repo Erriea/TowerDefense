@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -42,7 +43,13 @@ public class DefenderSpawner : MonoBehaviour
         }
 
         Instantiate(defenderPrefab, position, rotation);
+        
+        totalDefendersPlaced++;
+        OnDefenderPlaced?.Invoke(totalDefendersPlaced);
     }
+    
+    public event Action<int> OnDefenderPlaced;
+    private int totalDefendersPlaced;
     
     public class DefenderButtonUI : MonoBehaviour
     {
