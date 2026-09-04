@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0aa9916a8695140b9a3409760f2067, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 500
-  height: 400
+  width: 400
+  height: 300
   cellSize: 1
   terrainHeight: 15
   noiseScale: 30
@@ -186,7 +186,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   generateTerrain: 1
   towerManager: {fileID: 74005014}
-  heightSteps: 8
+  heightSteps: 7
   pathWidth: 8
   pathMeanderFrequency: 0.05
   pathSteerStrength: 0.15
@@ -205,7 +205,7 @@ MonoBehaviour:
   rockCount: 200
   environmentPadding: 2
   minTreeHeight: 10
-  maxTreeHeight: 500
+  maxTreeHeight: 800
   environmentParent: {fileID: 1699559992}
   defenderPadRadius: 5
   defenderPlacementGenerator: {fileID: 74005015}
@@ -501,7 +501,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.018658685, y: -0.903032, z: 0.42735302, w: 0.03942733}
-  m_LocalPosition: {x: 208.8, y: 118, z: 288.2}
+  m_LocalPosition: {x: 210, y: 111, z: 286}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -669,7 +669,7 @@ Light:
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
-  m_ColorTemperature: 5000
+  m_ColorTemperature: 3401
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
