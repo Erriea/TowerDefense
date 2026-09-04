@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0aa9916a8695140b9a3409760f2067, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 300
-  height: 200
+  width: 500
+  height: 400
   cellSize: 1
   terrainHeight: 15
   noiseScale: 30
@@ -193,6 +193,20 @@ MonoBehaviour:
   minPathCount: 3
   maxPathCount: 6
   useRandomSeed: 1
+  lowColorHex: '#45301D'
+  middleColorHex: '#0D4013'
+  highColorHex: '#061F0B'
+  treePrefabs:
+  - {fileID: 34075782911922079, guid: 02d36971c82cdea4099e30203335eb5b, type: 3}
+  rockPrefabs:
+  - {fileID: 5868041560739413326, guid: 817cbf2f2e0b8294aa7d6296cae60f2f, type: 3}
+  - {fileID: 3265073863929933657, guid: ad691eb9a012b124a9a5c6f324112775, type: 3}
+  treeCount: 200
+  rockCount: 200
+  environmentPadding: 2
+  minTreeHeight: 10
+  maxTreeHeight: 500
+  environmentParent: {fileID: 1699559992}
   defenderPadRadius: 5
   defenderPlacementGenerator: {fileID: 74005015}
   towerRadius: 12
@@ -486,13 +500,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.022302344, y: -0.8585886, z: 0.5108063, w: 0.037486885}
-  m_LocalPosition: {x: 153, y: 118, z: 189}
+  m_LocalRotation: {x: 0.018658685, y: -0.903032, z: 0.42735302, w: 0.03942733}
+  m_LocalPosition: {x: 208.8, y: 118, z: 288.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 61.5, y: -175, z: 0}
+  m_LocalEulerAnglesHint: {x: 50.651, y: -175, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1149,7 +1163,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Cost = 2
+  m_text: Cost = 5
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1435,6 +1449,37 @@ Transform:
   - {fileID: 728875711}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1699559991
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1699559992}
+  m_Layer: 0
+  m_Name: Evironment
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1699559992
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699559991}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 183.67741, y: 27.684494, z: 166.2556}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1723232171
 GameObject:
   m_ObjectHideFlags: 0
@@ -1705,3 +1750,4 @@ SceneRoots:
   - {fileID: 1666324410}
   - {fileID: 1180958783}
   - {fileID: 1927821679}
+  - {fileID: 1699559992}
