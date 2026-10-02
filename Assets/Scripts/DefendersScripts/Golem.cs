@@ -29,6 +29,7 @@ public class Golem : Defender
                 currentTarget = hit.transform;
 
                 enemy.TakeDamage(attackDamage);
+                AudioManager.PlayAttack(transform.position);
                 animator?.SetTrigger("Attack");
                 radiusEffect?.Play(attackRange);
                 Debug.Log($"{name} attacked {enemy.name} for {attackDamage} damage");

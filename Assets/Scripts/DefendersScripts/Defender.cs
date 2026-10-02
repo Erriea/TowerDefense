@@ -10,10 +10,13 @@ public abstract class Defender : MonoBehaviour, IDamageable
 
     protected float currentHealth;
     protected float attackTimer;
+    private EnemyHealthBar healthBar;
 
     protected virtual void Awake()
     {
         currentHealth = maxHealth;
+        healthBar = GetComponentInChildren<EnemyHealthBar>(true);
+        healthBar?.SetHealth(currentHealth, maxHealth);
     }
 
     
@@ -38,6 +41,7 @@ public abstract class Defender : MonoBehaviour, IDamageable
             if (enemy != null)
             {
                 enemy.TakeDamage(attackDamage);
+                AudioManager.PlayAttack(transform.position);
                 Debug.Log($"{name} attacked {enemy.name} for {attackDamage} damage");
                 attackTimer = 0f;
                 return;
@@ -48,6 +52,7 @@ public abstract class Defender : MonoBehaviour, IDamageable
     public virtual void TakeDamage(float amount)
     {
         currentHealth -= amount;
+        healthBar?.SetHealth(currentHealth, maxHealth);
         GetComponent<HitFeedback>()?.Flash();
         if (currentHealth <= 0) Die();
     }

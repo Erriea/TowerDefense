@@ -70,6 +70,17 @@ public class BomberEnemy : Enemy
         if (target is Tower tower)
             return tower.transform.position;
 
+        // Fallback for testing: if this Bomber was dropped straight into the scene instead of
+        // spawned via MonsterSpawner, Initialize() never ran, so target/waypoints are both null.
+        // Find the real Tower and wire it up as the target so TakeDamage calls actually land,
+        // instead of silently no-op'ing and detonating on this object's own position.
+        Tower sceneTower = FindAnyObjectByType<Tower>();
+        if (sceneTower != null)
+        {
+            target = sceneTower;
+            return sceneTower.transform.position;
+        }
+
         return waypoints != null && waypoints.Count > 0 ? waypoints[waypoints.Count - 1] : transform.position;
     }
 
@@ -98,6 +109,7 @@ public class BomberEnemy : Enemy
     private void Detonate()
     {
         Debug.Log($"{name} detonated for {explosionDamage} damage");
+        AudioManager.PlayExplosion(transform.position);
 
         if (explosionEffectPrefab != null)
             Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);

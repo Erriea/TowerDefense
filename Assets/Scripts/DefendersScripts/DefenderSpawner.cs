@@ -13,16 +13,6 @@ public class DefenderSpawner : MonoBehaviour
     
     public float DefenderCost => defenderCost;
 
-    private void OnEnable()
-    {
-        placementGenerator.OnSpotConfirmed += HandleSpotConfirmed;
-    }
-
-    private void OnDisable()
-    {
-        placementGenerator.OnSpotConfirmed -= HandleSpotConfirmed;
-    }
-
     public void SelectDefender()
     {
         if (manaSystem.CurrentMana < defenderCost)
@@ -31,7 +21,7 @@ public class DefenderSpawner : MonoBehaviour
             return;
         }
 
-        placementGenerator.BeginPlacementMode();
+        placementGenerator.BeginPlacementMode(HandleSpotConfirmed);
     }
 
     private void HandleSpotConfirmed(Vector3 position, Quaternion rotation)
@@ -43,6 +33,7 @@ public class DefenderSpawner : MonoBehaviour
         }
 
         Instantiate(defenderPrefab, position, rotation);
+        AudioManager.PlayDefenderPlace(position);
         
         totalDefendersPlaced++;
         OnDefenderPlaced?.Invoke(totalDefendersPlaced);

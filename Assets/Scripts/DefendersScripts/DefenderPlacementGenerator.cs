@@ -12,7 +12,10 @@ public class DefenderPlacementGenerator : MonoBehaviour
     [SerializeField] private float minDistanceFromPath = 5f;
     [SerializeField] private float minSpotSpacing = 5f;
     
-    public event Action<Vector3, Quaternion> OnSpotConfirmed;
+    // Only the spawner that actually started this placement should hear about it —
+    // a public event here would broadcast to every DefenderSpawner subscribed,
+    // which is what let a Golem spawn when the Archer button was clicked.
+    private Action<Vector3, Quaternion> pendingPlacementCallback;
 
     [SerializeField] private GameObject placementMarkerPrefab;
     
@@ -165,14 +168,16 @@ public class DefenderPlacementGenerator : MonoBehaviour
         }
     }
     
-    public void BeginPlacementMode()
+    public void BeginPlacementMode(Action<Vector3, Quaternion> onSpotConfirmed)
     {
         isInPlacementMode = true;
+        pendingPlacementCallback = onSpotConfirmed;
     }
 
     public void EndPlacementMode()
     {
         isInPlacementMode = false;
+        pendingPlacementCallback = null;
 
         if (previewMarker != null)
         {
@@ -251,7 +256,8 @@ public class DefenderPlacementGenerator : MonoBehaviour
             previewMarker = null;
         }
 
-        OnSpotConfirmed?.Invoke(currentPreviewSpot.Position, currentPreviewSpot.Rotation);
+        pendingPlacementCallback?.Invoke(currentPreviewSpot.Position, currentPreviewSpot.Rotation);
+        pendingPlacementCallback = null;
 
         currentPreviewSpot = null;
         isInPlacementMode = false;

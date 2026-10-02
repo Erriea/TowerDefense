@@ -39,6 +39,7 @@ public abstract class ProjectileShooter : MonoBehaviour
         if (projectilePrefab == null) return;
 
         Vector3 spawnPosition = firePoint != null ? firePoint.position : transform.position;
+        AudioManager.PlayShot(spawnPosition);
         GameObject projectileObject = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
         Projectile projectile = projectileObject.GetComponent<Projectile>();
 

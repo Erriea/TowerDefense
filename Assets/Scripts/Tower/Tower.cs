@@ -28,6 +28,7 @@ public class Tower : MonoBehaviour, IDamageable
 
         currentHealth = Mathf.Max(currentHealth - amount, 0f);
         Debug.Log($"Tower took {amount} damage, {currentHealth} / {maxHealth} HP left");
+        AudioManager.PlayTowerCrack(transform.position);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
         GetComponent<HitFeedback>()?.Flash();

@@ -97,6 +97,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         if (attackTimer >= attackInterval)
         {
             targetDefender.TakeDamage(damageToDefender);
+            AudioManager.PlayAttack(transform.position);
             Debug.Log($"{name} attacked {targetDefender.name}");
             attackTimer = 0f;
         }
