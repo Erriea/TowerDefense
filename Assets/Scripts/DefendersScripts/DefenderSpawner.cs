@@ -9,7 +9,7 @@ public class DefenderSpawner : MonoBehaviour
     [SerializeField] private GameObject defenderPrefab;
     [SerializeField] private DefenderPlacementGenerator placementGenerator;
 
-    [SerializeField] private float defenderCost = 2f;
+    [SerializeField] private float defenderCost = 3f;
     
     public float DefenderCost => defenderCost;
 

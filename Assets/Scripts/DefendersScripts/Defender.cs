@@ -1,7 +1,7 @@
 using UnityEngine;
 
 // DEFENDER BASE CLASS
-public abstract class Defender : MonoBehaviour
+public abstract class Defender : MonoBehaviour, IDamageable
 {
     [SerializeField] protected float maxHealth = 50f;
     [SerializeField] protected float attackDamage = 10f;
@@ -48,11 +48,16 @@ public abstract class Defender : MonoBehaviour
     public virtual void TakeDamage(float amount)
     {
         currentHealth -= amount;
+        GetComponent<HitFeedback>()?.Flash();
         if (currentHealth <= 0) Die();
     }
 
     protected virtual void Die()
     {
-        Destroy(gameObject);
+        var hitFeedback = GetComponent<HitFeedback>();
+        if (hitFeedback != null)
+            hitFeedback.Die(() => Destroy(gameObject));
+        else
+            Destroy(gameObject);
     }
 }

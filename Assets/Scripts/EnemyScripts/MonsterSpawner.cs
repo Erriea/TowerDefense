@@ -1,53 +1,16 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class MonsterSpawner : MonoBehaviour
 {
     [SerializeField] private MapGenerator mapGenerator;
-    [SerializeField] private GameObject enemyPrefab;
-    [SerializeField] private float spawnInterval = 3f;
-    
     [SerializeField] private TowerManager towerManager;
-    
-    public event Action<int> OnCrowSpawned;
-    private int totalCrowsSpawned;
 
-    public void BeginSpawning()
-    {
-        StopAllCoroutines();
-        StartCoroutine(SpawnLoop());
-    }
+    public event Action<int> OnEnemySpawned;
+    private int totalEnemiesSpawned;
 
-    private IEnumerator SpawnLoop()
-    {
-        while (true)
-        {
-            int pathIndex = Random.Range(0, mapGenerator.Paths.Count);
-            SpawnEnemyOnPath(mapGenerator.Paths[pathIndex]);
-
-            yield return new WaitForSeconds(spawnInterval);
-        }
-    }
-    
-    /*
-    private IEnumerator SpawnLoop()
-    {
-        while (true)
-        {
-            foreach (var path in mapGenerator.Paths)
-            {
-                SpawnEnemyOnPath(path);
-            }
-
-            yield return new WaitForSeconds(spawnInterval);
-        }
-    }
-    */
-
-    private void SpawnEnemyOnPath(IReadOnlyList<Vector2Int> path)
+    public void SpawnEnemyOnPath(IReadOnlyList<Vector2Int> path, GameObject enemyPrefab)
     {
         List<Vector3> worldWaypoints = new List<Vector3>();
 
@@ -63,8 +26,8 @@ public class MonsterSpawner : MonoBehaviour
 
         GameObject enemyObject = Instantiate(enemyPrefab, worldWaypoints[0], Quaternion.identity);
         enemyObject.GetComponent<Enemy>().Initialize(worldWaypoints, towerManager.TowerTarget);
-        
-        totalCrowsSpawned++;
-        OnCrowSpawned?.Invoke(totalCrowsSpawned);
+
+        totalEnemiesSpawned++;
+        OnEnemySpawned?.Invoke(totalEnemiesSpawned);
     }
 }

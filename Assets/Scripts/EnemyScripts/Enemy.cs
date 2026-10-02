@@ -1,27 +1,32 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+// ENEMY BASE CLASS
+public abstract class Enemy : MonoBehaviour, IDamageable
 {
-    private enum State { Walking, Attacking }
+    protected enum State { Walking, Attacking }
 
-    [SerializeField] private float maxHealth = 20f;
-    [SerializeField] private float moveSpeed = 3f;
-    [SerializeField] private float waypointReachedDistance = 0.2f;
-    [SerializeField] private float damageToTower = 10f;
+    [SerializeField] protected float maxHealth = 20f;
+    [SerializeField] protected float moveSpeed = 3f;
+    [SerializeField] protected float waypointReachedDistance = 0.2f;
+    [SerializeField] protected float damageToTower = 10f;
 
-    [SerializeField] private float detectionRange = 4f;
-    [SerializeField] private float damageToDefender = 5f;
-    [SerializeField] private float attackInterval = 1f;
+    [SerializeField] protected float detectionRange = 4f;
+    [SerializeField] protected float damageToDefender = 5f;
+    [SerializeField] protected float attackInterval = 1f;
 
-    private float currentHealth;
-    private List<Vector3> waypoints;
-    private int currentWaypointIndex;
-    private IDamageable target;
+    protected float currentHealth;
+    private EnemyHealthBar healthBar;
+    protected List<Vector3> waypoints;
+    protected int currentWaypointIndex;
+    protected IDamageable target;
 
-    private State state = State.Walking;
-    private Defender targetDefender;
-    private float attackTimer;
+    protected State state = State.Walking;
+    protected Defender targetDefender;
+    protected float attackTimer;
+
+    public float CurrentHealth => currentHealth;
+    public float MaxHealth => maxHealth;
 
     public void Initialize(List<Vector3> path, IDamageable target)
     {
@@ -29,9 +34,12 @@ public class Enemy : MonoBehaviour
         currentWaypointIndex = 0;
         currentHealth = maxHealth;
         this.target = target;
+
+        healthBar = GetComponentInChildren<EnemyHealthBar>(true);
+        healthBar?.SetHealth(currentHealth, maxHealth);
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (state == State.Attacking)
         {
@@ -42,7 +50,7 @@ public class Enemy : MonoBehaviour
         UpdateWalking();
     }
 
-    private void UpdateWalking()
+    protected virtual void UpdateWalking()
     {
         Defender nearbyDefender = FindNearbyDefender();
 
@@ -76,7 +84,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void UpdateAttacking()
+    protected virtual void UpdateAttacking()
     {
         if (targetDefender == null)
         {
@@ -94,7 +102,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private Defender FindNearbyDefender()
+    protected virtual Defender FindNearbyDefender()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, detectionRange);
 
@@ -111,22 +119,36 @@ public class Enemy : MonoBehaviour
         return null;
     }
 
-    private void ReachTower()
+    protected virtual void ReachTower()
     {
-        Debug.Log("Crow reached the tower!");
+        Debug.Log($"{name} reached the tower!");
 
         target?.TakeDamage(damageToTower);
         Destroy(gameObject);
     }
 
-    public void TakeDamage(float amount)
+    public static event System.Action OnAnyEnemyDespawned;
+
+    private void OnDestroy()
+    {
+        OnAnyEnemyDespawned?.Invoke();
+    }
+
+    public virtual void TakeDamage(float amount)
     {
         currentHealth -= amount;
         Debug.Log($"{name} took {amount} damage, {currentHealth} HP left");
 
+        healthBar?.SetHealth(currentHealth, maxHealth);
+        GetComponent<HitFeedback>()?.Flash();
+
         if (currentHealth <= 0)
         {
-            Destroy(gameObject);
+            var hitFeedback = GetComponent<HitFeedback>();
+            if (hitFeedback != null)
+                hitFeedback.Die(() => Destroy(gameObject));
+            else
+                Destroy(gameObject);
         }
     }
 }
