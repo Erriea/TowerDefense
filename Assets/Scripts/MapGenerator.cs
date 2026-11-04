@@ -35,7 +35,10 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private string highColorHex = "#43A047";
     
     [Header("Terrain Shader")]
-    [SerializeField] private Material terrainshaderMaterial;
+    [SerializeField] private Material terrainShaderMaterial;
+    
+    [Header("Terrain Displacement")]
+    [SerializeField] private Material terrainDisplacementMaterial;
     
     [Header("Random Object Spawning")]
     // arrays containing the prefabs so they can be randomised
@@ -509,7 +512,7 @@ public class MapGenerator : MonoBehaviour
         mesh.RecalculateBounds();
 
         meshFilter.sharedMesh = mesh;
-        GetComponent<Renderer>().sharedMaterial = terrainshaderMaterial;
+        GetComponent<Renderer>().sharedMaterial = terrainShaderMaterial;
 
         // Update collision mesh
         meshCollider.sharedMesh = null;
