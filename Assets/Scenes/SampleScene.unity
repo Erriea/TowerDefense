@@ -198,7 +198,7 @@ MonoBehaviour:
   lowColorHex: '#45301D'
   middleColorHex: '#0D4013'
   highColorHex: '#061F0B'
-  terrainshaderMaterial: {fileID: 2100000, guid: 36f6cb1ab31155648a5c0fd4432ccf81, type: 2}
+  terrainShaderMaterial: {fileID: 2100000, guid: c3fae832b7003a3469657da3276f90fa, type: 2}
   treePrefabs:
   - {fileID: 34075782911922079, guid: 02d36971c82cdea4099e30203335eb5b, type: 3}
   rockPrefabs:

@@ -37,9 +37,6 @@ public class MapGenerator : MonoBehaviour
     [Header("Terrain Shader")]
     [SerializeField] private Material terrainShaderMaterial;
     
-    [Header("Terrain Displacement")]
-    [SerializeField] private Material terrainDisplacementMaterial;
-    
     [Header("Random Object Spawning")]
     // arrays containing the prefabs so they can be randomised
     [SerializeField] private GameObject[] treePrefabs;
@@ -512,7 +509,10 @@ public class MapGenerator : MonoBehaviour
         mesh.RecalculateBounds();
 
         meshFilter.sharedMesh = mesh;
-        GetComponent<Renderer>().sharedMaterial = terrainShaderMaterial;
+        if (terrainShaderMaterial != null)
+        {
+            GetComponent<Renderer>().sharedMaterial = terrainShaderMaterial;
+        }
 
         // Update collision mesh
         meshCollider.sharedMesh = null;
