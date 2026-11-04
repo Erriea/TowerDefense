@@ -34,6 +34,9 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private string middleColorHex = "#8D6E63"; 
     [SerializeField] private string highColorHex = "#43A047";
     
+    [Header("Terrain Shader")]
+    [SerializeField] private Material terrainshaderMaterial;
+    
     [Header("Random Object Spawning")]
     // arrays containing the prefabs so they can be randomised
     [SerializeField] private GameObject[] treePrefabs;
@@ -506,6 +509,7 @@ public class MapGenerator : MonoBehaviour
         mesh.RecalculateBounds();
 
         meshFilter.sharedMesh = mesh;
+        GetComponent<Renderer>().sharedMaterial = terrainshaderMaterial;
 
         // Update collision mesh
         meshCollider.sharedMesh = null;
