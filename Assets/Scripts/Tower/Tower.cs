@@ -15,9 +15,12 @@ public class Tower : MonoBehaviour, IDamageable
     public event Action OnTowerDestroyed;
 
     public static event Action<Tower> OnTowerSpawned;
+    
+    [SerializeField] private PostProcessingScreen screenEffect;
 
     private void Awake()
     {
+        screenEffect = FindFirstObjectByType<PostProcessingScreen>();
         currentHealth = maxHealth;
         OnTowerSpawned?.Invoke(this);
     }
@@ -32,6 +35,8 @@ public class Tower : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
 
         GetComponent<HitFeedback>()?.Flash();
+        
+        screenEffect.PlayDamageEffect();
 
         if (currentHealth <= 0f)
         {

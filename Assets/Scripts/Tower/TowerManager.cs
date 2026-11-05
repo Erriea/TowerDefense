@@ -4,7 +4,8 @@ public class TowerManager : MonoBehaviour
 {
     [SerializeField] private MapGenerator mapGenerator;
     [SerializeField] private GameObject towerPrefab;
-    [SerializeField] private WaveManager waveManager;  
+    [SerializeField] private WaveManager waveManager; 
+    [SerializeField] private PostProcessingScreen screenEffect;
 
     private Tower tower;
 
