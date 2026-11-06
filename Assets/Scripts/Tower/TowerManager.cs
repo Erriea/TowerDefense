@@ -13,6 +13,8 @@ public class TowerManager : MonoBehaviour
 
     public void SpawnTower()
     {
+        Debug.Log("SPAWN TOWER METHOD CALLED!");
+        
         float x = (mapGenerator.Width * mapGenerator.CellSize) / 2f;
         float z = (mapGenerator.Height * mapGenerator.CellSize) / 2f;
         float y = mapGenerator.GetTerrainHeight(x, z);
@@ -21,9 +23,35 @@ public class TowerManager : MonoBehaviour
         Vector3 worldPosition = mapGenerator.transform.TransformPoint(localPosition);
 
         GameObject towerObject = Instantiate(towerPrefab, worldPosition, Quaternion.identity);
-        tower = towerObject.GetComponent<Tower>();
+        Debug.Log("TOWER PREFAB INSTANTIATED: " + towerObject.name);
 
+        tower = towerObject.GetComponent<Tower>();
+        
+        if (tower == null)
+        {
+            Debug.LogError("Tower component NOT FOUND on instantiated prefab!");
+        }
+        else
+        {
+            Debug.Log("TOWER COMPONENT SUCCESSFULLY FOUND!");
+        }
+        
         waveManager.BeginWaves(); 
+    }
+    
+    private void OnEnable()
+    {
+        Tower.OnTowerDestroyed += ClearTowerReference;
+    }
+
+    private void OnDisable()
+    {
+        Tower.OnTowerDestroyed -= ClearTowerReference;
+    }
+
+    private void ClearTowerReference()
+    {
+        tower = null;
     }
 
     /*

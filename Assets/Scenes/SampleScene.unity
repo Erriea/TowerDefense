@@ -1255,7 +1255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageVolume: {fileID: 193448397}
-  screenDuration: 0.5
+  screenDuration: 0.3
   vignetteIntensity: 0.2
 --- !u!4 &584264524
 Transform:
@@ -2662,6 +2662,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverPanel: {fileID: 715444071}
+  gameOverDelay: 3
 --- !u!1 &1723232171
 GameObject:
   m_ObjectHideFlags: 0

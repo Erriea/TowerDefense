@@ -65,24 +65,55 @@ public class BomberEnemy : Enemy
     }
 
     // The tower's real position, not the path's final waypoint — Bomber doesn't use the path.
+    
     private Vector3 TowerPosition()
     {
-        if (target is Tower tower)
-            return tower.transform.position;
+        // Convert the IDamageable target into a Tower
+        Tower tower = target as Tower;
 
-        // Fallback for testing: if this Bomber was dropped straight into the scene instead of
-        // spawned via MonsterSpawner, Initialize() never ran, so target/waypoints are both null.
-        // Find the real Tower and wire it up as the target so TakeDamage calls actually land,
-        // instead of silently no-op'ing and detonating on this object's own position.
-        Tower sceneTower = FindAnyObjectByType<Tower>();
-        if (sceneTower != null)
+        // Check whether the Tower still exists
+        if (tower != null)
         {
-            target = sceneTower;
-            return sceneTower.transform.position;
+            return tower.transform.position;
         }
 
-        return waypoints != null && waypoints.Count > 0 ? waypoints[waypoints.Count - 1] : transform.position;
+        // If the target was destroyed, search for a new Tower
+        tower = FindFirstObjectByType<Tower>();
+
+        if (tower != null)
+        {
+            target = tower;
+            return tower.transform.position;
+        }
+
+        // Fallback to the final waypoint
+        if (waypoints != null && waypoints.Count > 0)
+        {
+            return waypoints[waypoints.Count - 1];
+        }
+
+        // No Tower or waypoints available
+        return transform.position;
     }
+    // private Vector3 TowerPosition()
+    // {
+    //     if (target is Tower tower)
+    //
+    //         return tower.transform.position;
+    //
+    //     // Fallback for testing: if this Bomber was dropped straight into the scene instead of
+    //     // spawned via MonsterSpawner, Initialize() never ran, so target/waypoints are both null.
+    //     // Find the real Tower and wire it up as the target so TakeDamage calls actually land,
+    //     // instead of silently no-op'ing and detonating on this object's own position.
+    //     Tower sceneTower = FindAnyObjectByType<Tower>();
+    //     if (sceneTower != null)
+    //     {
+    //         target = sceneTower;
+    //         return sceneTower.transform.position;
+    //     }
+    //
+    //     return waypoints != null && waypoints.Count > 0 ? waypoints[waypoints.Count - 1] : transform.position;
+    // }
 
     private Defender FindNearestDefender()
     {

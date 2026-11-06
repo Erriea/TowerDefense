@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2220462107612290119}
   - component: {fileID: 8027864796430310914}
-  - component: {fileID: 2597206895462506632}
   - component: {fileID: -614930081041789701}
+  - component: {fileID: 6104290707212978760}
+  - component: {fileID: -7184778728046955840}
   m_Layer: 0
   m_Name: WizardTowerPoint
   m_TagString: Untagged
@@ -57,19 +58,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 11.892913, y: 30.05476, z: 11.925383}
   m_Center: {x: 1.1746898, y: 14.52738, z: 0.21348953}
---- !u!114 &2597206895462506632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5229765372996249487}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7506ec7cf8442049b4ffd46a777ca39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 100
 --- !u!114 &-614930081041789701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87,6 +75,34 @@ MonoBehaviour:
   range: 35
   fireInterval: 1
   damage: 5
+--- !u!114 &6104290707212978760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5229765372996249487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d083743e4dbee644593898aa7956e360, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destructionParticles: {fileID: 3969387775019769010, guid: 5f85dc33dcd1bac469e72b8c72aff311, type: 3}
+  debrisPrefab: {fileID: 4884227661239718195, guid: 7fa6bf274490e784ab5774dba97f2dd9, type: 3}
+--- !u!114 &-7184778728046955840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5229765372996249487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7506ec7cf8442049b4ffd46a777ca39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  screenEffect: {fileID: 0}
 --- !u!1 &7674745651486310099
 GameObject:
   m_ObjectHideFlags: 0
