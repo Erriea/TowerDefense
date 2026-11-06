@@ -5,6 +5,8 @@ public class BulwarkDefender : Defender
 {
     [SerializeField] private float healthRegenPerSecond = 1f;
 
+    public override DefenderKind Kind => DefenderKind.Raccoon; // displayed as "Raccoon"
+
     protected override void Update()
     {
         base.Update();

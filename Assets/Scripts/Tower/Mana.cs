@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class Mana : MonoBehaviour
 {
     [Header("Mana")]
-    [SerializeField] private float maxMana = 10f;
+    [SerializeField] private float maxMana = 20f;
     [SerializeField] private float manaRegen = 2f;
 
     private float currentMana;
@@ -18,7 +18,7 @@ public class Mana : MonoBehaviour
     
     private void Start()
     {
-        currentMana = 0f;   // ← this is the problem
+        currentMana = maxMana * 0.5f;   // start half full instead of empty
     
         OnManaChanged?.Invoke(currentMana, maxMana);
     }

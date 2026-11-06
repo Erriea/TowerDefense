@@ -10,6 +10,8 @@ public class Golem : Defender
 
     private Transform currentTarget;
 
+    public override DefenderKind Kind => DefenderKind.Golem;
+
     protected override void Update()
     {
         base.Update();

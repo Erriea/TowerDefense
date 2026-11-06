@@ -14,6 +14,36 @@ public abstract class ProjectileShooter : MonoBehaviour
 
     private float fireTimer;
 
+    private float baseDamage;
+    private float baseRange;
+    private float baseFireInterval;
+
+    protected virtual void Awake()
+    {
+        baseDamage = damage;
+        baseRange = range;
+        baseFireInterval = fireInterval;
+    }
+
+    // Used by the upgrade system — Archer/Tower's real combat stats live here,
+    // not on Defender's own fields, so upgrades are forwarded to this method.
+    public void ApplyStatBonus(float damageBonus, float rangeBonus, float fireIntervalReduction)
+    {
+        damage += damageBonus;
+        range += rangeBonus;
+        fireInterval = Mathf.Max(0.2f, fireInterval - fireIntervalReduction);
+    }
+
+    // Used when a timed upgrade expires — snaps back to the exact pre-upgrade
+    // values rather than trying to subtract bonuses back out (which could drift
+    // if fireInterval ever hit its floor clamp above).
+    public void ResetToBase()
+    {
+        damage = baseDamage;
+        range = baseRange;
+        fireInterval = baseFireInterval;
+    }
+
     protected virtual void Update()
     {
         fireTimer += Time.deltaTime;
