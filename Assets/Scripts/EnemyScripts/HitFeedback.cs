@@ -49,6 +49,27 @@ public class HitFeedback : MonoBehaviour
         flashRoutine = null;
     }
 
+    // Like Flash(), but HOLDS the tint color for the full `duration` instead of a quick blip —
+    // used for states that last a while (e.g. being stunned) where a 0.1s flash would be easy
+    // to miss entirely.
+    public void FlashHeld(Color color, float duration)
+    {
+        if (renderers == null || renderers.Length == 0) return;
+
+        if (flashRoutine != null)
+            StopCoroutine(flashRoutine);
+
+        flashRoutine = StartCoroutine(FlashHeldRoutine(color, duration));
+    }
+
+    private IEnumerator FlashHeldRoutine(Color color, float duration)
+    {
+        SetAllMaterialColors(color);
+        yield return new WaitForSeconds(duration);
+        RestoreAllMaterialColors();
+        flashRoutine = null;
+    }
+
     private void SetAllMaterialColors(Color color)
     {
         foreach (var rend in renderers)

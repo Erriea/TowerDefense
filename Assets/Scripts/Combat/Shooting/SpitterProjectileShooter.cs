@@ -18,7 +18,7 @@ public class SpitterProjectileShooter : ProjectileShooter
 
     protected override IDamageable FindTarget(out Transform targetTransform)
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, range);
+        Collider[] hits = Physics.OverlapSphere(transform.position, EffectiveRange);
 
         IDamageable nearestTarget = null;
         Transform nearestTransform = null;

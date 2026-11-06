@@ -65,22 +65,22 @@ public class BoostManager : MonoBehaviour
 
         Set(DefenderKind.Sniper, BoostType.Shield, new BoostDefinition
         {
-            label = "Sniper Shield", cost = 5f, duration = 10f
+            label = "Sniper Shield", cost = 6f, duration = 10f
         });
         Set(DefenderKind.Sniper, BoostType.AttackSpeed, new BoostDefinition
         {
-            label = "Sniper Speed", cost = 5f, duration = 10f,
+            label = "Sniper Speed", cost = 6f, duration = 10f,
             damageBonus = 6f, fireIntervalReduction = 0.6f,
             overrideMaterial = sniperMaterial, scaleMultiplier = 1.4f
         });
 
         Set(DefenderKind.Raccoon, BoostType.Shield, new BoostDefinition
         {
-            label = "Raccoon Shield", cost = 5f, duration = 10f
+            label = "Raccoon Shield", cost = 4f, duration = 10f
         });
         Set(DefenderKind.Raccoon, BoostType.AttackSpeed, new BoostDefinition
         {
-            label = "Raccoon Speed", cost = 5f, duration = 10f,
+            label = "Raccoon Speed", cost = 4f, duration = 10f,
             damageBonus = 4f, fireIntervalReduction = 0.4f,
             overrideMaterial = raccoonMaterial, scaleMultiplier = 1.75f, pulses = true
         });

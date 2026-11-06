@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
 
     [Header("Music")]
     [SerializeField] private AudioClip bgMusic;
-    [SerializeField] private float musicVolume = 0.5f;
+    [SerializeField] private float musicVolume = 0.25f;
 
     [Header("SFX")]
     [SerializeField] private AudioClip attackClip;
@@ -22,6 +22,14 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip defenderPlaceClip;
     [SerializeField] private AudioClip explosionClip;
     [SerializeField] private float sfxVolume = 1f;
+
+    // A per-clip multiplier on top of sfxVolume, for sounds that need their own loudness
+    // without changing every other SFX — explosions should hit harder than a regular shot.
+    [SerializeField] private float explosionVolumeMultiplier = 1.8f;
+
+    [Header("Environmental Events")]
+    [SerializeField] private AudioClip windClip;
+    [SerializeField] private AudioClip fogClip;
 
     private AudioSource musicSource;
 
@@ -49,7 +57,7 @@ public class AudioManager : MonoBehaviour
             : $"[AudioManager] Awake: playing '{bgMusic.name}', isPlaying={musicSource.isPlaying}, volume={musicSource.volume}");
     }
 
-    private static void PlayAtPoint(AudioClip clip, Vector3 position)
+    private static void PlayAtPoint(AudioClip clip, Vector3 position, float volumeMultiplier = 1f)
     {
         if (Instance == null)
         {
@@ -62,7 +70,10 @@ public class AudioManager : MonoBehaviour
             return;
         }
         Debug.Log($"[AudioManager] Playing '{clip.name}' at {position}");
-        AudioSource.PlayClipAtPoint(clip, position, Instance.sfxVolume);
+        // Not clamped to 1 here on purpose: sfxVolume already sits at its max (1), so a
+        // multiplier above 1 (e.g. explosionVolumeMultiplier) needs to actually push past that
+        // baseline to read as louder, rather than being clamped straight back down to it.
+        AudioSource.PlayClipAtPoint(clip, position, Instance.sfxVolume * volumeMultiplier);
     }
 
     // Melee attacks — Golem, Bulwark/Racoon, and the base Enemy attack tick (Musher).
@@ -77,8 +88,25 @@ public class AudioManager : MonoBehaviour
     // A defender being placed at a confirmed spot.
     public static void PlayDefenderPlace(Vector3 position) => PlayAtPoint(Instance != null ? Instance.defenderPlaceClip : null, position);
 
-    // A Bomber detonating.
-    public static void PlayExplosion(Vector3 position) => PlayAtPoint(Instance != null ? Instance.explosionClip : null, position);
+    // A Bomber detonating, or an environmental event's impact (e.g. Lightning Strike) — plays
+    // louder than regular SFX via explosionVolumeMultiplier so it actually reads as an impact.
+    public static void PlayExplosion(Vector3 position) =>
+        PlayAtPoint(Instance != null ? Instance.explosionClip : null, position, Instance != null ? Instance.explosionVolumeMultiplier : 1f);
+
+    // Wind and Fog are battlefield-wide atmospheric events, not tied to one point in space, so
+    // they play non-positionally through the same flat 2D source as music/UI clicks, rather
+    // than PlayAtPoint's 3D falloff (which would make them quieter depending on camera position).
+    public static void PlayWind()
+    {
+        if (Instance == null || Instance.windClip == null) return;
+        Instance.musicSource.PlayOneShot(Instance.windClip, Instance.sfxVolume);
+    }
+
+    public static void PlayFog()
+    {
+        if (Instance == null || Instance.fogClip == null) return;
+        Instance.musicSource.PlayOneShot(Instance.fogClip, Instance.sfxVolume);
+    }
 
     // Any UI button interaction. Non-positional — plays through the shared 2D music source.
     public static void PlayButtonClick()

@@ -18,6 +18,18 @@ public abstract class ProjectileShooter : MonoBehaviour
     private float baseRange;
     private float baseFireInterval;
 
+    // A temporary multiplier for environmental events (e.g. Fog) ONLY — kept completely
+    // separate from the Boost system's ApplyStatBonus/ResetToBase above, so the two can't
+    // clobber each other if a Boost and an environmental event are both active on the same
+    // defender at once. Subclasses must use EffectiveRange, not range, when targeting.
+    private float environmentalRangeMultiplier = 1f;
+    protected float EffectiveRange => range * environmentalRangeMultiplier;
+
+    public void SetEnvironmentalRangeMultiplier(float multiplier)
+    {
+        environmentalRangeMultiplier = multiplier;
+    }
+
     protected virtual void Awake()
     {
         baseDamage = damage;
@@ -86,6 +98,6 @@ public abstract class ProjectileShooter : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.DrawWireSphere(transform.position, EffectiveRange);
     }
 }

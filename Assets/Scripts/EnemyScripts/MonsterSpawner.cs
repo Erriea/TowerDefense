@@ -10,7 +10,7 @@ public class MonsterSpawner : MonoBehaviour
     public event Action<int> OnEnemySpawned;
     private int totalEnemiesSpawned;
 
-    public void SpawnEnemyOnPath(IReadOnlyList<Vector2Int> path, GameObject enemyPrefab)
+    public void SpawnEnemyOnPath(IReadOnlyList<Vector2Int> path, GameObject enemyPrefab, float spawnJitterRadius = 0f)
     {
         List<Vector3> worldWaypoints = new List<Vector3>();
 
@@ -24,7 +24,20 @@ public class MonsterSpawner : MonoBehaviour
             worldWaypoints.Add(mapGenerator.transform.TransformPoint(localPos));
         }
 
-        GameObject enemyObject = Instantiate(enemyPrefab, worldWaypoints[0], Quaternion.identity);
+        Vector3 spawnPosition = worldWaypoints[0];
+
+        if (spawnJitterRadius > 0f)
+        {
+            // scatter cluster members a bit so they don't spawn stacked on top of each other,
+            // then re-sample the terrain height at the offset spot
+            Vector2 jitter = UnityEngine.Random.insideUnitCircle * spawnJitterRadius;
+            Vector3 jitteredWorld = spawnPosition + new Vector3(jitter.x, 0f, jitter.y);
+            Vector3 localJittered = mapGenerator.transform.InverseTransformPoint(jitteredWorld);
+            float jitteredY = mapGenerator.GetTerrainHeight(localJittered.x, localJittered.z);
+            spawnPosition = mapGenerator.transform.TransformPoint(new Vector3(localJittered.x, jitteredY, localJittered.z));
+        }
+
+        GameObject enemyObject = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         enemyObject.GetComponent<Enemy>().Initialize(worldWaypoints, towerManager.TowerTarget);
 
         totalEnemiesSpawned++;

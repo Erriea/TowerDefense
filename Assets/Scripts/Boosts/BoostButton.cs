@@ -92,11 +92,10 @@ public class BoostButton : MonoBehaviour
         float currentMana = manaSystem != null ? manaSystem.CurrentMana : 0f;
         bool canAfford = definition != null && currentMana >= definition.cost;
 
-        // Every boost costs the same flat amount (shown once as a heading
-        // above the panel instead of repeated on every button), so the
-        // button just needs its short label while idle.
+        // Costs now vary per defender kind, so each button shows its own cost
+        // again instead of relying on a single flat-cost heading.
         if (statusText != null)
-            statusText.text = label;
+            statusText.text = definition != null ? $"{label}\nCost = {definition.cost}" : label;
 
         button.interactable = canAfford;
         if (canvasGroup != null) canvasGroup.alpha = canAfford ? 1f : unaffordableAlpha;

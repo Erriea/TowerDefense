@@ -5,7 +5,7 @@ public class TowerProjectileShooter : ProjectileShooter
 {
     protected override IDamageable FindTarget(out Transform targetTransform)
     {
-        Collider[] hits = Physics.OverlapSphere(transform.position, range);
+        Collider[] hits = Physics.OverlapSphere(transform.position, EffectiveRange);
 
         Enemy nearestEnemy = null;
         Transform nearestTransform = null;

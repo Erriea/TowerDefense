@@ -321,6 +321,15 @@ MonoBehaviour:
   detonateDistance: 1
   explosionDamage: 40
   explosionEffectPrefab: {fileID: 0}
+  flockRadius: 20
+  separationRadius: 9
+  targetSeekWeight: 2
+  separationWeight: 2.2
+  alignmentWeight: 1
+  cohesionWeight: 0.5
+  weightJitter: 0.2
+  wanderWeight: 1.1
+  wanderNoiseScale: 0.35
 --- !u!1001 &2159205496570247296
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -332,6 +341,18 @@ PrefabInstance:
     - target: {fileID: -7981514964708312862, guid: ee98db9b05d0add4db4228938ed46f43, type: 3}
       propertyPath: m_Name
       value: EnemyCrow
+      objectReference: {fileID: 0}
+    - target: {fileID: -6601043233671942095, guid: ee98db9b05d0add4db4228938ed46f43, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6601043233671942095, guid: ee98db9b05d0add4db4228938ed46f43, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: -6601043233671942095, guid: ee98db9b05d0add4db4228938ed46f43, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: -6601043233671942095, guid: ee98db9b05d0add4db4228938ed46f43, type: 3}
       propertyPath: m_LocalPosition.x

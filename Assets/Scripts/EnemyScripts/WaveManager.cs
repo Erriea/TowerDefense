@@ -9,6 +9,8 @@ public class EnemyWaveEntry
     public GameObject enemyPrefab;
     public int unlockWave = 1;      // first wave this type is allowed to appear in
     public float spawnWeight = 1f;  // relative likelihood once unlocked
+    public int clusterSize = 1;             // how many enemies spawn at once per "spawn event" (e.g. 5 for Crows, so they have flockmates to boid with immediately)
+    public float clusterSpreadRadius = 0f;  // random spawn-position spread (world units) for cluster members so they don't spawn stacked; 0 = no spread
 }
 
 public class WaveManager : MonoBehaviour
@@ -90,13 +92,18 @@ public class WaveManager : MonoBehaviour
         IReadOnlyList<Vector2Int> path = mapGenerator.Paths[pathIndex];
         pathIndex = (pathIndex + 1) % mapGenerator.Paths.Count;
 
-        GameObject prefab = ChooseEnemyType();
-        if (prefab != null)
+        EnemyWaveEntry entry = ChooseEntry();
+        if (entry != null && entry.enemyPrefab != null)
         {
             List<Vector2Int> spawnPath = TrimPathToDistance(path, maxSpawnDistanceFromTower);
-            monsterSpawner.SpawnEnemyOnPath(spawnPath, prefab);
-            enemiesRemaining++;
-            OnEnemiesRemainingChanged?.Invoke(enemiesRemaining);
+            int spawnCount = Mathf.Max(1, entry.clusterSize);
+
+            for (int i = 0; i < spawnCount; i++)
+            {
+                monsterSpawner.SpawnEnemyOnPath(spawnPath, entry.enemyPrefab, entry.clusterSpreadRadius);
+                enemiesRemaining++;
+                OnEnemiesRemainingChanged?.Invoke(enemiesRemaining);
+            }
         }
     }
 
@@ -130,7 +137,7 @@ public class WaveManager : MonoBehaviour
         return trimmed;
     }
 
-    private GameObject ChooseEnemyType()
+    private EnemyWaveEntry ChooseEntry()
     {
         List<EnemyWaveEntry> unlocked = new List<EnemyWaveEntry>();
         float totalWeight = 0f;
@@ -153,10 +160,10 @@ public class WaveManager : MonoBehaviour
         {
             cumulative += entry.spawnWeight;
             if (roll <= cumulative)
-                return entry.enemyPrefab;
+                return entry;
         }
 
-        return unlocked[unlocked.Count - 1].enemyPrefab;
+        return unlocked[unlocked.Count - 1];
     }
 
     private void AdjustDifficultyForNextWave()

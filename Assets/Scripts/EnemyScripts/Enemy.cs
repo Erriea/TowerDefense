@@ -25,8 +25,18 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     protected Defender targetDefender;
     protected float attackTimer;
 
+    // Set by environmental events (e.g. a Lightning Strike) — while > 0 this enemy can't move
+    // or attack at all, checked once at the top of Update() so every enemy subtype is covered
+    // automatically with no per-subclass changes needed.
+    private float stunTimer;
+
+    // Held (not just flashed) on the enemy's renderers for the whole stun duration, so a frozen
+    // enemy is obviously different-looking the entire time, not just for a blink at the start.
+    [SerializeField] private Color stunTintColor = new Color(1f, 0.95f, 0.3f);
+
     public float CurrentHealth => currentHealth;
     public float MaxHealth => maxHealth;
+    public bool IsStunned => stunTimer > 0f;
 
     public void Initialize(List<Vector3> path, IDamageable target)
     {
@@ -41,6 +51,12 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     protected virtual void Update()
     {
+        if (stunTimer > 0f)
+        {
+            stunTimer -= Time.deltaTime;
+            return;
+        }
+
         if (state == State.Attacking)
         {
             UpdateAttacking();
@@ -48,6 +64,16 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         }
 
         UpdateWalking();
+    }
+
+    // Freezes this enemy for `duration` seconds. A second stun while already stunned extends
+    // to whichever remaining time is longer rather than stacking additively, so repeated zaps
+    // can't accidentally lock an enemy in place forever.
+    public void Stun(float duration)
+    {
+        float remaining = Mathf.Max(stunTimer, duration);
+        stunTimer = remaining;
+        GetComponent<HitFeedback>()?.FlashHeld(stunTintColor, remaining);
     }
 
     protected virtual void UpdateWalking()
