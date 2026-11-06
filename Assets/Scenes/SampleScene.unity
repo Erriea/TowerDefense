@@ -793,24 +793,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetAspect: 1.7777778
---- !u!114 &3329866869088800227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 330585543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69b1bce24b698296a938bbd8104b94b9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leanAmount: 0.35
-  rollDegrees: 3
-  pitchDegrees: 2
-  jitterAmount: 0.08
-  jitterSpeed: 0.6
-  swayLerpSpeed: 1.5
 --- !u!1 &355913397
 GameObject:
   m_ObjectHideFlags: 0
@@ -1282,6 +1264,12 @@ MonoBehaviour:
   damageVolume: {fileID: 193448397}
   screenDuration: 0.3
   vignetteIntensity: 0.2
+  lightningFlashDuration: 0.18
+  lightningExposureSpike: 4
+  fogVignetteIntensity: 0.15
+  fogColorFilter: {r: 0.78, g: 0.8, b: 0.82, a: 1}
+  windVignettePulseIntensity: 0.12
+  windVignettePulseSpeed: 2.5
 --- !u!4 &584264524
 Transform:
   m_ObjectHideFlags: 0
@@ -4130,6 +4118,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!4 &1285326031980809698
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986385913428684930}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!225 &1321344769097895060
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4906,7 +4909,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.02
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -5293,6 +5296,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &2986385913428684930
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1285326031980809698}
+  - component: {fileID: 4431468046425154002}
+  m_Layer: 0
+  m_Name: EnvironmentalEventManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &3010895916476085714
 GameObject:
   m_ObjectHideFlags: 0
@@ -5562,6 +5582,24 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &3329866869088800227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69b1bce24b698296a938bbd8104b94b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leanAmount: 0.35
+  rollDegrees: 3
+  pitchDegrees: 2
+  jitterAmount: 0.08
+  jitterSpeed: 0.6
+  swayLerpSpeed: 1.5
 --- !u!114 &3343924670597707171
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5931,7 +5969,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -10, y: -10}
+  m_AnchoredPosition: {x: -10, y: -66}
   m_SizeDelta: {x: 250, y: 200}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &3824381677025393333
@@ -6080,7 +6118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bgMusic: {fileID: 8300000, guid: ffce4b1d0c292ba468280236bf710eb6, type: 3}
-  musicVolume: 0.25
+  musicVolume: 0.02
   attackClip: {fileID: 8300000, guid: 6f219dd79ef52294da020ec502e0c452, type: 3}
   shotClip: {fileID: 8300000, guid: 427696c779f846241a90cf4834d5e18f, type: 3}
   towerCrackClip: {fileID: 8300000, guid: 6502c67062cd9f1478f1f73dc604a85b, type: 3}
@@ -6324,6 +6362,30 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1158886367888449822}
   m_CullTransparentMesh: 1
+--- !u!114 &4431468046425154002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2986385913428684930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b50978da6d4a5206d0436f47cb6d7423, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  firstEligibleWave: 4
+  triggerChancePerWave: 0.4
+  lightningRadius: 8
+  lightningStunDuration: 2.5
+  lightningVfxPrefab: {fileID: 0}
+  fogRangeMultiplier: 0.55
+  fogDuration: 8
+  windDriftStrength: 3
+  windDuration: 8
+  debugForceLightning: 0
+  debugForceFog: 0
+  debugForceWind: 0
 --- !u!222 &4434101337867268771
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6619,55 +6681,3 @@ SceneRoots:
   - {fileID: 584264524}
   - {fileID: 2633862265704840739}
   - {fileID: 1285326031980809698}
---- !u!1 &2986385913428684930
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1285326031980809698}
-  - component: {fileID: 4431468046425154002}
-  m_Layer: 0
-  m_Name: EnvironmentalEventManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1285326031980809698
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2986385913428684930}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4431468046425154002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2986385913428684930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b50978da6d4a5206d0436f47cb6d7423, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  firstEligibleWave: 4
-  triggerChancePerWave: 0.4
-  lightningRadius: 8
-  lightningStunDuration: 2.5
-  lightningVfxPrefab: {fileID: 0}
-  debugForceLightning: 0
-  debugForceFog: 0
-  debugForceWind: 1
