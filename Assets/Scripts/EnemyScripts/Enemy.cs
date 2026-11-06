@@ -124,7 +124,16 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     {
         Debug.Log($"{name} reached the tower!");
 
-        target?.TakeDamage(damageToTower);
+        if (target != null)
+        {
+            target.TakeDamage(damageToTower);
+        }
+        else
+        {
+            Debug.LogWarning($"{name} reached the tower, but the tower no longer exists.");
+        }
+
+        //target?.TakeDamage(damageToTower);
         Destroy(gameObject);
     }
 
