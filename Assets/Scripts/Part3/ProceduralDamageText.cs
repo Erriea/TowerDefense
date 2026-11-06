@@ -1,16 +1,21 @@
+using TMPro;
 using UnityEngine;
 
 public class ProceduralDamageText : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    [SerializeField] private string[] damageWords = {"DANG!", "CRITICAL!", "FRACTURED!", "SHATTERED!", "SEEPING MANA!"};
 
-    // Update is called once per frame
-    void Update()
+    [SerializeField] private TextMeshPro damageText;
+
+    public void GenerateDamageWord()
     {
-        
+        if (damageWords.Length == 0)
+            return;
+
+        int randomIndex = Random.Range(0, damageWords.Length);
+
+        string generatedWord = damageWords[randomIndex];
+
+        damageText.text = generatedWord;
     }
 }

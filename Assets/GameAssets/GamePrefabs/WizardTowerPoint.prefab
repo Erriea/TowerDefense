@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: -614930081041789701}
   - component: {fileID: 6104290707212978760}
   - component: {fileID: -7184778728046955840}
+  - component: {fileID: -8558257047478684574}
   m_Layer: 0
   m_Name: WizardTowerPoint
   m_TagString: Untagged
@@ -102,7 +103,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 100
+  damageTextSpawner: {fileID: -8558257047478684574}
   screenEffect: {fileID: 0}
+--- !u!114 &-8558257047478684574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5229765372996249487}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d235aadbf7aa224fa17306c04f98765, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageTextPrefab: {fileID: 78658286799808250, guid: 2ccfaa1ce23624c44bdf18f94f8f17ec, type: 3}
+  damageWords:
+  - DANG!
+  - CRITICAL!
+  - FRACTURED!
+  - SHATTERED!
+  - SEEPING MANA!
 --- !u!1 &7674745651486310099
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 public class Tower : MonoBehaviour, IDamageable, IBoostable
 {
     [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private DamageTextSpawner damageTextSpawner;
 
     private float currentHealth;
     private bool isDead;
@@ -34,7 +35,8 @@ public class Tower : MonoBehaviour, IDamageable, IBoostable
         visualRenderers = BoostVisuals.FindModelRenderers(gameObject);
         baseMaterials = BoostVisuals.CaptureBaseMaterials(visualRenderers);
         baseScale = transform.localScale;
-
+        
+        damageTextSpawner = GetComponent<DamageTextSpawner>();
         ApplyAlreadyActiveBoosts();
     }
 
@@ -120,7 +122,6 @@ public class Tower : MonoBehaviour, IDamageable, IBoostable
     public void TakeDamage(float amount)
     {
         Debug.Log("TOWER TAKE DAMAGE CALLED!");
-
         if (isDead || isShielded) return;
 
         currentHealth = Mathf.Max(currentHealth - amount, 0f);
@@ -131,7 +132,17 @@ public class Tower : MonoBehaviour, IDamageable, IBoostable
         GetComponent<HitFeedback>()?.Flash();
         
         screenEffect?.PlayDamageEffect();
-
+        damageTextSpawner.SpawnDamageText();
+        
+        if (damageTextSpawner != null)
+        {
+            damageTextSpawner.SpawnDamageText();
+        }
+        else
+        {
+            Debug.LogError("DamageTextSpawner is missing from the Tower!");
+        }
+        
         if (currentHealth <= 0f)
         {
             Die();
